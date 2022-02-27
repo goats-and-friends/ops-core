@@ -43,7 +43,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: environments/staging
+        working-directory: environments/${{ inputs.environment }}
 
     steps:
 
@@ -57,9 +57,10 @@ jobs:
 
     - name: Terraform Init
       run: |
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output=text)
         terraform init \
-          -backend-config="bucket=tf-state-bucket-$(aws sts get-caller-identity --query Account --output=text)-${{ secrets.AWS_REGION }}" \
-          -backend-config="region=${{ secrets.AWS_REGION }}" -reconfigure
+          -backend-config="bucket=tf-state-bucket-${AWS_ACCOUNT_ID}-${{ secrets.AWS_REGION }}" \
+          -backend-config="region=${{ secrets.AWS_REGION }}"
 
     - name: Terraform Plan
       id: plan
