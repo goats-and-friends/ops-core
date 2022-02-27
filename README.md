@@ -30,7 +30,7 @@ export TF_VAR_aws_region=us-east-1
 
 pushd environments/$ENV
 terraform init \
-  -backend-config="bucket=tf-state-bucket-$(aws sts get-caller-identity --query Account --output=text)-us-east-1" \
+  -backend-config="bucket=tf-state-bucket-$(aws sts get-caller-identity --query Account --output=text)-$TF_VAR_aws_region" \
   -backend-config="region=$TF_VAR_aws_region" -reconfigure
 terraform plan -out tfplan
 

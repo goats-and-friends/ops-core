@@ -7,7 +7,7 @@ module "aws_github_oidc" {
   attach_admin_policy = true
   github_organisation = "goats-and-friends"
   github_repositories = [
-    "ops-core",  # DO NOT REMOVE
+    "ops-core", # DO NOT REMOVE
     "ops-factorio",
   ]
 }
