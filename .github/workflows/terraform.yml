@@ -6,6 +6,12 @@ on:
       environment:
         required: true
         type: string
+    secrets:
+      AWS_ACCOUNT_ID:
+        required: true
+      AWS_REGION:
+        required: true
+
 jobs:
 
   caller-identity:
@@ -24,7 +30,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github
       - run: aws sts get-caller-identity
-
 
   terraform:
     name: 'Terraform'

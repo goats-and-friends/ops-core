@@ -1,4 +1,4 @@
-name: 'CI/CD'
+name: CI/CD
 
 on:
   push:
@@ -11,18 +11,18 @@ on:
 jobs:
 
   lint:
-    name: 'Lint ${{ matrix.working-directory }}'
+    name: Lint ${{ matrix.working-directory }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        working-directory:
-          - environments/staging
-          - environments/prod
+        environment:
+        - staging
+        - production
 
     defaults:
       run:
         shell: bash
-        working-directory: '${{ matrix.working-directory }}'
+        working-directory: environments/${{ matrix.environment }}
 
     steps:
 
@@ -38,6 +38,10 @@ jobs:
       run: terraform fmt -check
 
   deploy-staging:
+    needs: lint
     uses: ./.github/workflows/terraform.yml
     with:
       environment: staging
+    secrets:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
