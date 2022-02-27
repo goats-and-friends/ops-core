@@ -1,18 +1,16 @@
 name: 'Terraform'
 
 on:
-  push:
-    branches:
-    - main
-  pull_request:
-    branches:
-    - main
-
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 jobs:
 
   caller-identity:
     name: Check caller identity
-    environment: staging
+    environment: "${{ inputs.environment }}"
     permissions:
       contents: read
       id-token: write
@@ -32,7 +30,7 @@ jobs:
     name: 'Terraform'
     needs: [caller-identity]
     runs-on: ubuntu-latest
-    environment: staging
+    environment: "${{ inputs.environment }}"
 
     defaults:
       run:
@@ -48,9 +46,6 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: 1.1.6
-
-    - name: Terraform Format
-      run: terraform fmt -check
 
     - name: Terraform Init
       run: terraform init

@@ -1,0 +1,43 @@
+name: 'CI/CD'
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+
+  lint:
+    name: 'Lint ${{ matrix.working-directory }}'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        working-directory:
+          - environments/staging
+          - environments/prod
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: '${{ matrix.working-directory }}'
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.1.6
+
+    - name: Terraform Format
+      run: terraform fmt -check
+
+  deploy-staging:
+    uses: ./.github/workflows/terraform.yml
+    with:
+      environment: staging
