@@ -11,7 +11,7 @@ on:
 jobs:
 
   lint:
-    name: Lint ${{ matrix.working-directory }}
+    name: Lint ${{ matrix.environment }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -37,8 +37,19 @@ jobs:
       run: terraform fmt -check
 
   deploy-staging:
+    name: Deploy staging
     needs: lint
-    uses: ./.github/workflows/terraform.yml
+    uses: ./.github/workflows/deploy-terraform.yml
+    with:
+      environment: staging
+    secrets:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+
+  deploy-production:
+    name: Deploy production
+    needs: lint
+    uses: ./.github/workflows/deploy-terraform.yml
     with:
       environment: staging
     secrets:
