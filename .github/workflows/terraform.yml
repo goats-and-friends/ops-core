@@ -10,32 +10,15 @@ on:
 
 jobs:
 
-  caller-identity:
-    name: Check caller identity
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github
-      - run: aws sts get-caller-identity
-
-
   terraform:
     name: 'Terraform'
-    needs: [caller-identity]
     runs-on: ubuntu-latest
     environment: staging
 
     defaults:
       run:
         shell: bash
+        working-directory: environments/staging
 
     steps:
 
@@ -49,6 +32,13 @@ jobs:
 
     - name: Terraform Format
       run: terraform fmt -check
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github
+    - run: aws sts get-caller-identity
 
     - name: Terraform Init
       run: terraform init
