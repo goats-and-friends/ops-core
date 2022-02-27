@@ -1,11 +1,24 @@
 terraform {
-  backend "remote" {
-    # The name of your Terraform Cloud organization.
-    organization = "goats-and-friends"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.70"
+    }
+  }
 
-    # The name of the Terraform Cloud workspace to store Terraform state files in.
-    workspaces {
-      name = "ops-bootstrap"
+  backend "s3" {
+    key = "environments/shared/core.tf"
+  }
+
+  required_version = "~> 1.0"
+}
+
+provider "aws" {
+  region = var.aws_region
+
+  default_tags {
+    tags = {
+      env = "production"
     }
   }
 }
