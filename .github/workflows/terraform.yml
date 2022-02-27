@@ -37,6 +37,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: environments/staging
 
     steps:
 
