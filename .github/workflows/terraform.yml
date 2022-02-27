@@ -12,6 +12,7 @@ jobs:
 
   caller-identity:
     name: Check caller identity
+    environment: staging
     permissions:
       contents: read
       id-token: write
