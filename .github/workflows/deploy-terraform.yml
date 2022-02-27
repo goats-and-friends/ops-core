@@ -19,7 +19,6 @@ jobs:
 
   terraform:
     name: 'Terraform'
-    needs: [caller-identity]
     runs-on: ubuntu-latest
     environment: "${{ inputs.environment }}"
     permissions:
